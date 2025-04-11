@@ -7,16 +7,16 @@ const dummyUser = {
 };
 
 const dummySchedules = [
-  { id: 1, className: 'B.Tech CSE - DBMS', time: '10:00 AM' },
-  { id: 2, className: 'B.Tech IT - OS', time: '12:00 PM' },
-  { id: 3, className: 'B.Tech AI - ML Basics', time: '2:00 PM' },
+  { id: 1, className: 'B.Tech CSE - DBMS', time: '10:00 AM to 12:00 PM' },
+  { id: 2, className: 'B.Tech IT - OS', time: '12:00 PM to 2:00 PM' },
+  { id: 3, className: 'B.Tech AI - ML Basics', time: '2:00 PM to 4:00 PM' },
 ];
 
 const dummyStudents = [
-  { id: 1, name: 'Ravi Verma' },
-  { id: 2, name: 'Sneha Kapoor' },
-  { id: 3, name: 'Arjun Nair' },
-  { id: 4, name: 'Megha Rathi' },
+  { id: 1, scholarNo: '23U01000' },
+  { id: 2, scholarNo: '23U01001' },
+  { id: 3, scholarNo: '23U01002' },
+  { id: 4, scholarNo: '23U01003' },
 ];
 
 function App() {
@@ -26,8 +26,6 @@ function App() {
   const [selectedClass, setSelectedClass] = useState(null);
   const [attendance, setAttendance] = useState({});
   const [selectedDate, setSelectedDate] = useState('');
-
-  // 🔧 New States for Filter in History
   const [filterDate, setFilterDate] = useState('');
   const [filterClass, setFilterClass] = useState('');
 
@@ -105,29 +103,28 @@ function App() {
           ))}
           <br />
           <div style={{ display: 'flex', gap: '75px', marginTop: '20px' }}>
-  <button onClick={() => setStep('history')}>View Attendance History</button>
-  <button
-    onClick={() => {
-      setStep('login');
-      setEmail('');
-      setPass('');
-      setSelectedClass(null);
-      setAttendance({});
-      setSelectedDate('');
-    }}
-    style={{
-      backgroundColor: '#e74c3c',
-      color: 'white',
-      border: 'none',
-      padding: '8px 12px',
-      borderRadius: '4px',
-      cursor: 'pointer',
-    }}
-  >
-    Logout
-  </button>
-</div>
-
+            <button onClick={() => setStep('history')}>View Attendance History</button>
+            <button
+              onClick={() => {
+                setStep('login');
+                setEmail('');
+                setPass('');
+                setSelectedClass(null);
+                setAttendance({});
+                setSelectedDate('');
+              }}
+              style={{
+                backgroundColor: '#e74c3c',
+                color: 'white',
+                border: 'none',
+                padding: '8px 12px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+              }}
+            >
+              Logout
+            </button>
+          </div>
         </>
       )}
 
@@ -137,19 +134,39 @@ function App() {
           <p>Date: {selectedDate}</p>
           <p>Time: {selectedClass.time}</p>
           <h4>Mark Attendance</h4>
-          {dummyStudents.map((student) => (
-            <div key={student.id}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={attendance[student.id] || false}
-                  onChange={() => toggleAttendance(student.id)}
-                />
-                {student.name}
-              </label>
-            </div>
-          ))}
-          <button onClick={handleSubmit}>Submit Attendance</button>
+          {dummyStudents.map((student, index) => (
+  <div
+    key={student.id}
+    style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+      maxWidth: '500px',
+      marginBottom: '8px',
+      padding: '8px 16px',
+      border: '1px solid #ccc',
+      borderRadius: '6px',
+      backgroundColor: '#f9f9f9',
+      whiteSpace: 'nowrap',
+    }}
+  >
+    <span style={{ fontSize: '16px' }}>
+      {index + 1}. <strong>{student.scholarNo}</strong>
+    </span>
+    <input
+      type="checkbox"
+      checked={attendance[student.id] || false}
+      onChange={() => toggleAttendance(student.id)}
+      style={{ transform: 'scale(1.2)' }}
+    />
+  </div>
+))}
+
+          <div style={{ marginTop: '15px' }}>
+            <button onClick={handleSubmit}>Submit Attendance</button>
+            <button onClick={() => setStep('date')} style={{ marginLeft: '10px' }}>Back</button>
+          </div>
         </>
       )}
 
@@ -180,7 +197,7 @@ function App() {
                 <tr>
                   <th>Date</th>
                   <th>Class</th>
-                  <th>Student Name</th>
+                  <th>Student Scholar No.</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -190,7 +207,7 @@ function App() {
                     <tr key={`${idx}-${student.id}`}>
                       <td>{record.date}</td>
                       <td>{record.className}</td>
-                      <td>{student.name}</td>
+                      <td>{student.scholarNo}</td>
                       <td>{record.attendance[student.id] ? 'P' : 'A'}</td>
                     </tr>
                   ))
