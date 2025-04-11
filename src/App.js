@@ -27,6 +27,10 @@ function App() {
   const [attendance, setAttendance] = useState({});
   const [selectedDate, setSelectedDate] = useState('');
 
+  // 🔧 New States for Filter in History
+  const [filterDate, setFilterDate] = useState('');
+  const [filterClass, setFilterClass] = useState('');
+
   const handleLogin = (e) => {
     e.preventDefault();
     if (email === dummyUser.email && pass === dummyUser.password) {
@@ -50,17 +54,25 @@ function App() {
   };
 
   const handleSubmit = () => {
-    const presentStudents = dummyStudents.filter((s) => attendance[s.id]);
-    console.log('Submitting attendance:', {
+    const newRecord = {
       date: selectedDate,
-      class: selectedClass,
-      presentStudents,
-    });
+      className: selectedClass.className,
+      attendance,
+    };
+    const existing = JSON.parse(localStorage.getItem('attendanceHistory') || '[]');
+    localStorage.setItem('attendanceHistory', JSON.stringify([...existing, newRecord]));
     alert('Attendance submitted!');
     setStep('date');
     setSelectedClass(null);
     setAttendance({});
   };
+
+  const history = JSON.parse(localStorage.getItem('attendanceHistory') || '[]');
+  const filteredHistory = history.filter((record) => {
+    const matchDate = filterDate ? record.date === filterDate : true;
+    const matchClass = filterClass ? record.className === filterClass : true;
+    return matchDate && matchClass;
+  });
 
   return (
     <div className="container">
@@ -91,6 +103,31 @@ function App() {
               <p>{cls.time}</p>
             </div>
           ))}
+          <br />
+          <div style={{ display: 'flex', gap: '75px', marginTop: '20px' }}>
+  <button onClick={() => setStep('history')}>View Attendance History</button>
+  <button
+    onClick={() => {
+      setStep('login');
+      setEmail('');
+      setPass('');
+      setSelectedClass(null);
+      setAttendance({});
+      setSelectedDate('');
+    }}
+    style={{
+      backgroundColor: '#e74c3c',
+      color: 'white',
+      border: 'none',
+      padding: '8px 12px',
+      borderRadius: '4px',
+      cursor: 'pointer',
+    }}
+  >
+    Logout
+  </button>
+</div>
+
         </>
       )}
 
@@ -115,14 +152,58 @@ function App() {
           <button onClick={handleSubmit}>Submit Attendance</button>
         </>
       )}
+
+      {step === 'history' && (
+        <>
+          <h2>Attendance History</h2>
+          <div style={{ marginBottom: '15px' }}>
+            <label>Filter by Date: </label>
+            <input
+              type="date"
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+            />
+            <label style={{ marginLeft: '20px' }}>Filter by Class: </label>
+            <select value={filterClass} onChange={(e) => setFilterClass(e.target.value)}>
+              <option value="">All</option>
+              {[...new Set(history.map(h => h.className))].map((cls, i) => (
+                <option key={i} value={cls}>{cls}</option>
+              ))}
+            </select>
+          </div>
+
+          {filteredHistory.length === 0 ? (
+            <p>No attendance records match the filter.</p>
+          ) : (
+            <table border="1" cellPadding="8" style={{ marginTop: '1rem' }}>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Class</th>
+                  <th>Student Name</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredHistory.map((record, idx) =>
+                  dummyStudents.map((student) => (
+                    <tr key={`${idx}-${student.id}`}>
+                      <td>{record.date}</td>
+                      <td>{record.className}</td>
+                      <td>{student.name}</td>
+                      <td>{record.attendance[student.id] ? 'P' : 'A'}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
+          <br />
+          <button onClick={() => setStep('date')}>Back to Schedule</button>
+        </>
+      )}
     </div>
   );
 }
 
 export default App;
-
-
-
-
-
-
