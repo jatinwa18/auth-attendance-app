@@ -28,6 +28,7 @@ function App() {
   const [selectedDate, setSelectedDate] = useState('');
   const [filterDate, setFilterDate] = useState('');
   const [filterClass, setFilterClass] = useState('');
+  const [searchTerm, setSearchTerm] = useState(''); // ✅ Added for search
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -63,6 +64,7 @@ function App() {
     setStep('date');
     setSelectedClass(null);
     setAttendance({});
+    setSearchTerm('');
   };
 
   const history = JSON.parse(localStorage.getItem('attendanceHistory') || '[]');
@@ -134,34 +136,57 @@ function App() {
           <p>Date: {selectedDate}</p>
           <p>Time: {selectedClass.time}</p>
           <h4>Mark Attendance</h4>
-          {dummyStudents.map((student, index) => (
-  <div
-    key={student.id}
-    style={{
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      width: '100%',
-      maxWidth: '500px',
-      marginBottom: '8px',
-      padding: '8px 16px',
-      border: '1px solid #ccc',
-      borderRadius: '6px',
-      backgroundColor: '#f9f9f9',
-      whiteSpace: 'nowrap',
-    }}
-  >
-    <span style={{ fontSize: '16px' }}>
-      {index + 1}. <strong>{student.scholarNo}</strong>
-    </span>
-    <input
-      type="checkbox"
-      checked={attendance[student.id] || false}
-      onChange={() => toggleAttendance(student.id)}
-      style={{ transform: 'scale(1.2)' }}
-    />
-  </div>
-))}
+
+          {/* ✅ Search Bar */}
+          <input
+            type="text"
+            placeholder="Search Scholar No..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              width: '100%',
+              maxWidth: '500px',
+              padding: '8px 12px',
+              marginBottom: '16px',
+              border: '1px solid #ccc',
+              borderRadius: '6px',
+              fontSize: '16px',
+            }}
+          />
+
+          {/* ✅ Filtered List */}
+          {dummyStudents
+            .filter((student) =>
+              student.scholarNo.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            .map((student, index) => (
+              <div
+                key={student.id}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: '100%',
+                  maxWidth: '500px',
+                  marginBottom: '8px',
+                  padding: '8px 16px',
+                  border: '1px solid #ccc',
+                  borderRadius: '6px',
+                  backgroundColor: '#f9f9f9',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <span style={{ fontSize: '16px' }}>
+                  {index + 1}. <strong>{student.scholarNo}</strong>
+                </span>
+                <input
+                  type="checkbox"
+                  checked={attendance[student.id] || false}
+                  onChange={() => toggleAttendance(student.id)}
+                  style={{ transform: 'scale(1.2)' }}
+                />
+              </div>
+            ))}
 
           <div style={{ marginTop: '15px' }}>
             <button onClick={handleSubmit}>Submit Attendance</button>
