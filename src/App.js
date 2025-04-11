@@ -169,7 +169,7 @@ function App() {
                   width: '100%',
                   maxWidth: '500px',
                   marginBottom: '8px',
-                  padding: '8px 16px',
+                  padding: '8px 12px',
                   border: '1px solid #ccc',
                   borderRadius: '6px',
                   backgroundColor: '#f9f9f9',
