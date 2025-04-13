@@ -5,7 +5,7 @@ const dummyUser = {
   email: 'amit.gupta@college.edu',
   password: 'amit123',
 };
-
+//dummy data 
 const dummySchedules = [
   { id: 1, className: 'B.Tech CSE - DBMS', time: '10:00 AM to 12:00 PM' },
   { id: 2, className: 'B.Tech IT - OS', time: '12:00 PM to 2:00 PM' },
