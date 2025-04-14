@@ -5,7 +5,7 @@ const dummyUser = {
   email: 'amit.gupta@college.edu',
   password: 'amit123',
 };
-//dummy data 
+
 const dummySchedules = [
   { id: 1, className: 'B.Tech CSE - DBMS', time: '10:00 AM to 12:00 PM' },
   { id: 2, className: 'B.Tech IT - OS', time: '12:00 PM to 2:00 PM' },
@@ -28,7 +28,7 @@ function App() {
   const [selectedDate, setSelectedDate] = useState('');
   const [filterDate, setFilterDate] = useState('');
   const [filterClass, setFilterClass] = useState('');
-  const [searchTerm, setSearchTerm] = useState(''); // ✅ Added for search
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -96,15 +96,14 @@ function App() {
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
           />
-          <h3 style={{ marginTop: '20px' }}>Today's Scheduled Classes</h3>
+          <h3 style={{ marginTop: '30px' }}>Today's Scheduled Classes</h3>
           {dummySchedules.map((cls) => (
             <div className="card" key={cls.id} onClick={() => handleClassClick(cls)}>
               <h4>{cls.className}</h4>
               <p>{cls.time}</p>
             </div>
           ))}
-          <br />
-          <div style={{ display: 'flex', gap: '75px', marginTop: '20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '30px' }}>
             <button onClick={() => setStep('history')}>View Attendance History</button>
             <button
               onClick={() => {
@@ -117,11 +116,6 @@ function App() {
               }}
               style={{
                 backgroundColor: '#e74c3c',
-                color: 'white',
-                border: 'none',
-                padding: '8px 12px',
-                borderRadius: '4px',
-                cursor: 'pointer',
               }}
             >
               Logout
@@ -137,24 +131,13 @@ function App() {
           <p>Time: {selectedClass.time}</p>
           <h4>Mark Attendance</h4>
 
-          {/* ✅ Search Bar */}
           <input
             type="text"
             placeholder="Search Scholar No..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              width: '100%',
-              maxWidth: '500px',
-              padding: '8px 12px',
-              marginBottom: '16px',
-              border: '1px solid #ccc',
-              borderRadius: '6px',
-              fontSize: '16px',
-            }}
           />
 
-          {/* ✅ Filtered List */}
           {dummyStudents
             .filter((student) =>
               student.scholarNo.toLowerCase().includes(searchTerm.toLowerCase())
@@ -166,31 +149,29 @@ function App() {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  width: '100%',
-                  maxWidth: '500px',
-                  marginBottom: '8px',
-                  padding: '8px 16px',
+                  marginBottom: '10px',
+                  padding: '10px 16px',
                   border: '1px solid #ccc',
-                  borderRadius: '6px',
+                  borderRadius: '8px',
                   backgroundColor: '#f9f9f9',
-                  whiteSpace: 'nowrap',
                 }}
               >
-                <span style={{ fontSize: '16px' }}>
+                <span>
                   {index + 1}. <strong>{student.scholarNo}</strong>
                 </span>
                 <input
                   type="checkbox"
                   checked={attendance[student.id] || false}
                   onChange={() => toggleAttendance(student.id)}
-                  style={{ transform: 'scale(1.2)' }}
                 />
               </div>
             ))}
 
-          <div style={{ marginTop: '15px' }}>
+          <div style={{ marginTop: '20px' }}>
             <button onClick={handleSubmit}>Submit Attendance</button>
-            <button onClick={() => setStep('date')} style={{ marginLeft: '10px' }}>Back</button>
+            <button onClick={() => setStep('date')} style={{ marginLeft: '12px' }}>
+              Back
+            </button>
           </div>
         </>
       )}
@@ -198,7 +179,7 @@ function App() {
       {step === 'history' && (
         <>
           <h2>Attendance History</h2>
-          <div style={{ marginBottom: '15px' }}>
+          <div style={{ marginBottom: '20px' }}>
             <label>Filter by Date: </label>
             <input
               type="date"
@@ -217,7 +198,7 @@ function App() {
           {filteredHistory.length === 0 ? (
             <p>No attendance records match the filter.</p>
           ) : (
-            <table border="1" cellPadding="8" style={{ marginTop: '1rem' }}>
+            <table>
               <thead>
                 <tr>
                   <th>Date</th>
@@ -249,3 +230,4 @@ function App() {
 }
 
 export default App;
+
